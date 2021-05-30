@@ -1,0 +1,201 @@
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+#
+
+name: Build x86_64
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+
+env:
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  REPO_URL: https://github.com/i028/iWrt
+  REPO_BRANCH: master
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: config/x86_64.config
+  DIY_P1_SH: scripts/diy-part1.sh
+  DIY_P2_SH: scripts/diy-part2.sh
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_WETRANSFER: true
+  UPLOAD_RELEASE: true
+  UPLOAD_ARTIFACT: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Space Clean
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+        sudo -E apt-get -y install rename
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
+    - name: Clone Source
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    - name: Install Feeds
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: Load Config
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_P2_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P2_SH
+
+    - name: Download Package
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile Firmware
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(($(nproc)+1)) thread compile"
+        make -j$(($(nproc)+1)) || make -j1 V=s
+        echo "::set-output name=status::success"
+        echo "iDATE=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
+        echo "iTAG=${{ github.event.repository.name }}-$(date +"%y.%m.%d-%H%M")" >> $GITHUB_ENV
+
+    - name: Check Space
+      if: (!cancelled())
+      run: df -hT
+      
+    - name: Upload Bin
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: ${{ env.iTAG }}-Bin
+        path: openwrt/bin/packages/*/
+
+    - name: Organize Files
+      id: organize
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        rm -rf "*.manifest"
+        rm -rf $(find ./ -type f -name "*rootfs*")
+        rm -rf $(find ./ -type f -name "*kernel*")
+        sed -i /".*rootfs.img"/d sha256sums
+        sed -i "s/op.*combined/${{ env.iTAG }}/g" sha256sums
+        sed -i "s/op.*kernel/${{ env.iTAG }}-kernel/g" sha256sums
+        sed -i "s/op.*generic/${{ env.iTAG }}/g" sha256sums
+        rename -v "s/config.*/${{ env.iTAG }}.config/" *
+        rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
+        rename -v "s/.*combined/${{ env.iTAG }}/" *
+        rename -v "s/^sha256sums$/${{ env.iTAG }}-sha256sums/" *
+        ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "::set-output name=status::success"
+        
+    #- name: Organize Files
+    #  id: organize
+    #  run: |
+    #    mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
+    #    -name "*combined*" \
+    #    -or -name "*sysupgrade*" \
+    #    -or -name "*armvirt-64-default-rootfs*" \
+    #    -or -name "sha256sums" \
+    #    | xargs -i mv -f {} ./firmware/
+    #    cp openwrt/.config  ./firmware/x86_64.config
+    #    cd firmware
+    #    echo ${{ env.iDate }} > Ver.txt
+    #    mv sha256sums x86_64-sha256sums
+    #    echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: ${{ env.iTAG }}
+        path: ${{ env.FIRMWARE }}
+
+    - name: Upload WeTransfer
+      if: env.UPLOAD_WETRANSFER == 'true' && ! contains(github.event.action, 'noup')
+      continue-on-error: true
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        wetrans=$(./transfer wet -s -p 16 --no-progress ${FIRMWARE})
+        wetrans=$(echo $wetrans | grep -o -E "https[^ ]*")
+        echo "WETRANS=$wetrans" >> $GITHUB_ENV
+        echo "Download Link: $wetrans"
+          
+    - name: Create Release
+      id: tag
+      if: env.REPO_TOKEN && env.UPLOAD_RELEASE == 'true'
+      continue-on-error: true
+      run: |
+        echo -e "加速下载:\n" >> release.txt
+        [ ${{ env.WETRANS }} ] && echo -e "[WeTransfer] (${{ env.WETRANS }} )\n" >> release.txt
+        [ ${{ env.NOTICE }} ] && echo -e "${{ env.NOTICE }}" >> release.txt || true
+        
+    - name: Upload Release
+      uses: softprops/action-gh-release@v1
+      continue-on-error: true
+      if: env.REPO_TOKEN && env.UPLOAD_RELEASE == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      with:
+        name: ${{ env.iTAG }}
+        tag_name: ${{ env.iTAG }}
+        files: ${{ env.FIRMWARE }}/*
+        body_path: release.txt
+
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      continue-on-error: true
+      with:
+        retain_days: 30
+        keep_minimum_runs: 3
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@master
+      continue-on-error: true
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
