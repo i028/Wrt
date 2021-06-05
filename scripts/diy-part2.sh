@@ -59,6 +59,9 @@ git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 rm -rf ../lean/luci-theme-argon
 
+git clone https://github.com/i028/luci-theme-netgear
+rm -rf ../lean/luci-theme-netgear
+
 # Add tmate
 git clone --depth=1 https://github.com/project-openwrt/openwrt-tmate
 
