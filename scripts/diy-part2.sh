@@ -38,8 +38,9 @@ git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 
 # Add luci-app-adguardhome
-svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/luci-app-adguardhome
-svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/AdGuardHome
+#svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/luci-app-adguardhome
+#git clone https://github.com/rufengsuixing/luci-app-adguardhome
+#svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/AdGuardHome
 
 # Add luci-app-diskman
 git clone --depth=1 https://github.com/SuLingGG/luci-app-diskman
@@ -69,7 +70,7 @@ git clone --depth=1 https://github.com/project-openwrt/openwrt-tmate
 git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 
 # Add gotop
-svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/gotop
+#svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/gotop
 
 # Add smartdns
 #svn co https://github.com/pymumu/smartdns/trunk/package/openwrt ../smartdns
