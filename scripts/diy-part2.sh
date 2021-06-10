@@ -11,28 +11,28 @@
 #
 
 # Modify default IP
-#sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/10.10.10.1/g' package/base-files/files/bin/config_generate
 
 # Clone community packages to package/community
 mkdir package/community
 pushd package/community
 
 # Add luci-app-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
+#git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 
 # Add mentohust & luci-app-mentohust
 git clone --depth=1 https://github.com/BoringCat/luci-app-mentohust
 git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
 
 # Add minieap & luci-proto-minieap
-git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
-svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/minieap
+#git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
+#svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/minieap
 
 # Add ServerChan
-git clone --depth=1 https://github.com/tty228/luci-app-serverchan
+#git clone --depth=1 https://github.com/tty228/luci-app-serverchan
 
 # Add OpenClash
-git clone --depth=1 -b master https://github.com/vernesong/OpenClash
+#git clone --depth=1 -b master https://github.com/vernesong/OpenClash
 
 # Add luci-app-onliner (need luci-app-nlbwmon)
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
@@ -72,15 +72,15 @@ git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/gotop
 
 # Add smartdns
-svn co https://github.com/pymumu/smartdns/trunk/package/openwrt ../smartdns
-svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/luci-app-smartdns ../luci-app-smartdns
+#svn co https://github.com/pymumu/smartdns/trunk/package/openwrt ../smartdns
+#svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/luci-app-smartdns ../luci-app-smartdns
 
 # Add luci-udptools
-git clone --depth=1 https://github.com/zcy85611/openwrt-luci-kcp-udp
+#git clone --depth=1 https://github.com/zcy85611/openwrt-luci-kcp-udp
 
 # Add OpenAppFilter
-# git clone --depth=1 https://github.com/destan19/OpenAppFilter
-# popd
+git clone --depth=1 https://github.com/destan19/OpenAppFilter
+popd
 
 # Mod zzz-default-settings
 pushd package/lean/default-settings/files
