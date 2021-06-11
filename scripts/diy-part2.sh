@@ -11,7 +11,7 @@
 #
 
 # Modify default IP
-sed -i 's/192.168.1.1/10.10.10.1/g' package/base-files/files/bin/config_generate
+#sed -i 's/192.168.1.1/10.10.10.1/g' package/base-files/files/bin/config_generate
 
 # Clone community packages to package/community
 mkdir package/community
@@ -21,8 +21,8 @@ pushd package/community
 #git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 
 # Add mentohust & luci-app-mentohust
-git clone --depth=1 https://github.com/BoringCat/luci-app-mentohust
-git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
+#git clone --depth=1 https://github.com/BoringCat/luci-app-mentohust
+#git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
 
 # Add minieap & luci-proto-minieap
 #git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
@@ -64,10 +64,10 @@ git clone https://github.com/i028/luci-theme-netgear
 rm -rf ../lean/luci-theme-netgear
 
 # Add tmate
-git clone --depth=1 https://github.com/project-openwrt/openwrt-tmate
+#git clone --depth=1 https://github.com/project-openwrt/openwrt-tmate
 
 # Add subconverter
-git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
+#git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 
 # Add gotop
 #svn co https://github.com/project-openwrt/openwrt/trunk/package/ctcgfw/gotop
@@ -80,8 +80,8 @@ git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 #git clone --depth=1 https://github.com/zcy85611/openwrt-luci-kcp-udp
 
 # Add OpenAppFilter
-git clone --depth=1 https://github.com/destan19/OpenAppFilter
-popd
+#git clone --depth=1 https://github.com/destan19/OpenAppFilter
+#popd
 
 # Mod zzz-default-settings
 pushd package/lean/default-settings/files
