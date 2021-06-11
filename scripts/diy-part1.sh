@@ -25,3 +25,6 @@ rm -rf ../lean/luci-theme-netgear
 
 git clone https://github.com/C-oss/luci-theme-atmaterial package/luci-theme-atmaterial
 git clone https://github.com/C-oss/luci-theme-darkmatter package/luci-theme-darkmatter
+
+# Add filebrowser
+git clone https://github.com/C-oss/luci-app-filebrowser package/luci-app-filebrowser
