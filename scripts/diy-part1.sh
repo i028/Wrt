@@ -27,4 +27,4 @@ git clone https://github.com/C-oss/luci-theme-atmaterial package/luci-theme-atma
 git clone https://github.com/C-oss/luci-theme-darkmatter package/luci-theme-darkmatter
 
 # Add filebrowser
-git clone https://github.com/C-oss/luci-app-filebrowser package/luci-app-filebrowser
+#git clone https://github.com/C-oss/luci-app-filebrowser package/luci-app-filebrowser
