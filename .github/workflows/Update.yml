@@ -13,7 +13,7 @@ name: Update Repo
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  REPO_URL: https://github.com/i028/lede
+  REPO_URL: https://github.com/i028/iWrt
   REPO_BRANCH: master
 
 on:
