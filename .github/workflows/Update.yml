@@ -13,7 +13,7 @@ name: Update Repo
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  REPO_URL: https://github.com/i028/iWrt
+  REPO_URL: https://github.com/i028/openwrt
   REPO_BRANCH: master
 
 on:
