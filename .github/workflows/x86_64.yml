@@ -61,10 +61,7 @@ jobs:
 
     - name: Install Feeds
       run: |
-        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
-        chmod +x $DIY_P1_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P1_SH
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
@@ -73,8 +70,6 @@ jobs:
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Download Package
       id: package
@@ -89,16 +84,11 @@ jobs:
       id: compile
       run: |
         cd openwrt
-        echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
         echo "::set-output name=status::success"
         echo "iDATE=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "iTAG=${{ github.event.repository.name }}-$(date +"%y.%m.%d-%H%M")" >> $GITHUB_ENV
 
-    - name: Check Space
-      if: (!cancelled())
-      run: df -hT
-      
     - name: Upload Bin
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
@@ -121,21 +111,6 @@ jobs:
         ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
-        
-    #- name: Organize Files
-    #  id: organize
-    #  run: |
-    #    mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
-    #    -name "*combined*" \
-    #    -or -name "*sysupgrade*" \
-    #    -or -name "*armvirt-64-default-rootfs*" \
-    #    -or -name "sha256sums" \
-    #    | xargs -i mv -f {} ./firmware/
-    #    cp openwrt/.config  ./firmware/x86_64.config
-    #    cd firmware
-    #    echo ${{ env.iDate }} > Ver.txt
-    #    mv sha256sums x86_64-sha256sums
-    #    echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
