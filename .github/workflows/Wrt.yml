@@ -122,7 +122,6 @@ jobs:
         rename -v "s/config.*/${{ env.iTAG }}.config/" *
         rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
         rename -v "s/.*combined/${{ env.iTAG }}/" *
-        ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
         
@@ -139,6 +138,7 @@ jobs:
     #    cd firmware
     #    echo ${{ env.iDate }} > Ver.txt
     #    mv sha256sums x86_64-sha256sums
+    #    ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
     #    echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
     - name: Upload Artifact
