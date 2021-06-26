@@ -48,12 +48,12 @@ mkdir parted
 cp luci-app-diskman/Parted.Makefile parted/Makefile
 
 # Add luci-app-dockerman
-rm -rf ../lean/luci-app-docker
-git clone --depth=1 https://github.com/KFERMercer/luci-app-dockerman
+#rm -rf ../lean/luci-app-docker
+git clone --depth=1 https://github.com/lisaac/luci-app-dockerman
 git clone --depth=1 https://github.com/lisaac/luci-lib-docker
 
 # Add luci-app-gowebdav
-git clone --depth=1 https://github.com/project-openwrt/openwrt-gowebdav
+#git clone --depth=1 https://github.com/project-openwrt/openwrt-gowebdav
 
 # Add luci-theme-argon
 git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon
@@ -97,21 +97,21 @@ svn co https://github.com/openwrt/packages/trunk/libs/libssh
 popd
 
 # Use Lienol's https-dns-proxy package
-pushd feeds/packages/net
-rm -rf https-dns-proxy
-svn co https://github.com/Lienol/openwrt-packages/trunk/net/https-dns-proxy
-popd
+#pushd feeds/packages/net
+#rm -rf https-dns-proxy
+#svn co https://github.com/Lienol/openwrt-packages/trunk/net/https-dns-proxy
+#popd
 
 # Use snapshots syncthing package
-pushd feeds/packages/utils
-rm -rf syncthing
-svn co https://github.com/openwrt/packages/trunk/utils/syncthing
-popd
+#pushd feeds/packages/utils
+#rm -rf syncthing
+#svn co https://github.com/openwrt/packages/trunk/utils/syncthing
+#popd
 
 # Fix mt76 wireless driver
-pushd package/kernel/mt76
-sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
-popd
+#pushd package/kernel/mt76
+#sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
+#popd
 
 # Add po2lmo
 git clone https://github.com/openwrt-dev/po2lmo.git
