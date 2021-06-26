@@ -9,7 +9,7 @@
 # Description: Source code update checker
 #
 
-name: Update Repo
+name: Update
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
