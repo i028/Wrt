@@ -9,3 +9,5 @@ rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
 rename -v "s/.*kernel/${{ env.iTAG }}-kernel/" *
 rename -v "s/.*combined/${{ env.iTAG }}/" *
 ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
+
+echo "Success"
