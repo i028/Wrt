@@ -43,14 +43,14 @@ git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 #svn co https://github.com/project-openwrt/openwrt/trunk/package/ntlf9t/AdGuardHome
 
 # Add luci-app-diskman
-git clone --depth=1 https://github.com/SuLingGG/luci-app-diskman
-mkdir parted
-cp luci-app-diskman/Parted.Makefile parted/Makefile
+#git clone --depth=1 https://github.com/SuLingGG/luci-app-diskman
+#mkdir parted
+#cp luci-app-diskman/Parted.Makefile parted/Makefile
 
 # Add luci-app-dockerman
 #rm -rf ../lean/luci-app-docker
-git clone --depth=1 https://github.com/lisaac/luci-app-dockerman
 git clone --depth=1 https://github.com/lisaac/luci-lib-docker
+git clone --depth=1 https://github.com/lisaac/luci-app-dockerman
 
 # Add luci-app-gowebdav
 #git clone --depth=1 https://github.com/project-openwrt/openwrt-gowebdav
@@ -60,8 +60,8 @@ git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 rm -rf ../lean/luci-theme-argon
 
-git clone https://github.com/i028/luci-theme-netgear
-rm -rf ../lean/luci-theme-netgear
+#git clone https://github.com/i028/luci-theme-netgear
+#rm -rf ../lean/luci-theme-netgear
 
 # Add tmate
 #git clone --depth=1 https://github.com/project-openwrt/openwrt-tmate
@@ -91,10 +91,10 @@ rm -rf ../lean/luci-theme-netgear
 #popd
 
 # Fix libssh
-pushd feeds/packages/libs
-rm -rf libssh
-svn co https://github.com/openwrt/packages/trunk/libs/libssh
-popd
+#pushd feeds/packages/libs
+#rm -rf libssh
+#svn co https://github.com/openwrt/packages/trunk/libs/libssh
+#popd
 
 # Use Lienol's https-dns-proxy package
 #pushd feeds/packages/net
