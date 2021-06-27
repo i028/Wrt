@@ -1,4 +1,3 @@
-cd openwrt/bin/targets/*/*
 rm -rf packages
 rm -rf "*.manifest"
 rm -rf $(find ./ -type f -name "*sha256sums*")
