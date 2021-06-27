@@ -191,15 +191,15 @@ jobs:
       uses: GitRML/delete-workflow-runs@main
       continue-on-error: true
       with:
-        retain_days: 30
-        keep_minimum_runs: 3
+        retain_days: 5
+        keep_minimum_runs: 10
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@master
       continue-on-error: true
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 3
+        keep_latest: 5
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
