@@ -15,15 +15,15 @@
 
 # Add a feed source
 #sed -i '$a src-git lienol https://github.com/Lienol/openwrt-package' feeds.conf.default
-sed -i '$a src-git small https://github.com/i028/small' feeds.conf.default
+#sed -i '$a src-git small https://github.com/i028/small' feeds.conf.default
 sed -i '$a src-git helloworld https://github.com/C-oss/helloworld' feeds.conf.default
 
 # Add luci-theme-argon
 git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon
 rm -rf ../lean/luci-theme-argon
 
-git clone https://github.com/i028/luci-theme-netgear
 rm -rf ../lean/luci-theme-netgear
+git clone https://github.com/i028/luci-theme-netgear package/luci-theme-netgear
 
 git clone https://github.com/C-oss/luci-theme-atmaterial package/luci-theme-atmaterial
 git clone https://github.com/C-oss/luci-theme-darkmatter package/luci-theme-darkmatter
