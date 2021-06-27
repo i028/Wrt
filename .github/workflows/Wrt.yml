@@ -101,7 +101,7 @@ jobs:
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: ${{ env.iTAG }}-Bin
-        path: ./bin/packages/*/
+        path: openwrt/bin/packages/*/
 
     - name: Organize Files
       id: organize
