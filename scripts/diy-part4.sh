@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -rf packages
 rm -rf "*.manifest"
 rm -rf $(find ./ -type f -name "*sha256sums*")
