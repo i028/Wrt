@@ -27,7 +27,6 @@ env:
   CONFIG_FILE: config/lede.config
   DIY_P1_SH: scripts/diy-part1.sh
   DIY_P2_SH: scripts/diy-part2.sh
-  DIY_P4_SH: scripts/diy-part4.sh
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true
   UPLOAD_WETRANSFER: true
