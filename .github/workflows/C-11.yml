@@ -151,8 +151,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
-        name: ${{ env.iTAG }}
-        tag_name: ${{ env.iTAG }}
+        name: C-11-${{ env.iTAG }}
+        tag_name: C-11-${{ env.iTAG }}
         files: ${{ env.FIRMWARE }}/*
         body_path: release.txt
 
