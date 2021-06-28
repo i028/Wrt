@@ -96,7 +96,7 @@ jobs:
         echo "iDATE=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "iTAG=${{ github.event.repository.name }}-$(date +"%y.%m-%d%H%M")" >> $GITHUB_ENV
         
-    - name: Upload Bin
+    - name: Upload Packages
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
@@ -106,9 +106,16 @@ jobs:
     - name: Organize Files
       id: organize
       run: |
-        chmod +x $DIY_P4_SH
         cd openwrt/bin/targets/*/*
-        $GITHUB_WORKSPACE/$DIY_P4_SH
+        rm -rf packages
+        rm -rf "*.manifest"
+        rm -rf $(find ./ -type f -name "*sha256sums*")
+        rename -v "s/config.*/${{ env.iTAG }}.config/" *
+        rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
+        rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
+        rename -v "s/.*kernel/${{ env.iTAG }}-kernel/" *
+        rename -v "s/.*combined/${{ env.iTAG }}/" *
+        ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
 
