@@ -59,7 +59,7 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH
 
-    - name: Install Feeds
+    - name: Update Feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF lede/feeds.conf.default
         chmod +x $DIY_P1_SH
@@ -71,7 +71,7 @@ jobs:
     - name: Load Config
       run: |
         [ -e files ] && mv files lede/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE lede/.config
         chmod +x $DIY_P2_SH
         cd lede
         $GITHUB_WORKSPACE/$DIY_P2_SH
