@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: C-11
+name: C-SSH
 
 on:
   repository_dispatch:
