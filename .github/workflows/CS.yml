@@ -109,6 +109,7 @@ jobs:
         rm -rf packages
         rm -rf "*.manifest"
         rm -rf $(find ./ -type f -name "*sha256sums*")
+        rm -rf $(find ./ -type f -name "*tar.gz")
         rename -v "s/config.*/${{ env.iTAG }}.config/" *
         rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
         rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
