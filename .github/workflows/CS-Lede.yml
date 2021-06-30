@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: CS
+name: CS-Lede
 
 on:
   repository_dispatch:
