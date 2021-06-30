@@ -99,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ env.iTAG }}-Bin
+        name: ${{ env.iTAG }}-Packages
         path: openwrt/bin/packages/*/
 
     - name: Organize Files
