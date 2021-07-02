@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Wrt-Lede
+name: Wrt
 
 on:
   repository_dispatch:
@@ -68,7 +68,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: Load Config
+    - name: Custom Files
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -93,7 +93,7 @@ jobs:
         make -j$(($(nproc)+1)) || make -j1 V=s
         echo "::set-output name=status::success"
         echo "iDATE=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
-        echo "iTAG=${{ github.event.repository.name }}-Lede-$(date +"%y.%m-%d%H%M")" >> $GITHUB_ENV
+        echo "iTAG=${{ github.event.repository.name }}-$(date +"%y.%m.%d%H%M")-lede" >> $GITHUB_ENV
         
     - name: Upload Packages
       uses: actions/upload-artifact@main
@@ -105,6 +105,8 @@ jobs:
     - name: Organize Files
       id: organize
       run: |
+        mkdir -p ./artifact/buildinfo
+        cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
         cd openwrt/bin/targets/*/*
         rm -rf packages
         rm -rf "*.manifest"
@@ -114,9 +116,26 @@ jobs:
         rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
         rename -v "s/.*kernel/${{ env.iTAG }}-kernel/" *
         rename -v "s/.*combined/${{ env.iTAG }}/" *
-        ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
+        ls | xargs -i tar zcvf {}.gz {} --remove-files
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
+        
+        
+    #- name: Organize Files
+    #  id: organize2
+    #  run: |
+    #    cd openwrt/bin/targets/*/*
+    #    rm -rf packages
+    #    rm -rf "*.manifest"
+    #    rm -rf $(find ./ -type f -name "*sha256sums*")
+    #    rename -v "s/config.*/${{ env.iTAG }}.config/" *
+    #    rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
+    #    rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
+    #    rename -v "s/.*kernel/${{ env.iTAG }}-kernel/" *
+    #    rename -v "s/.*combined/${{ env.iTAG }}/" *
+    #    ls | xargs -i tar zcvf {}.tar.gz {} --remove-files
+    #    echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+    #    echo "::set-output name=status::success"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
@@ -124,6 +143,12 @@ jobs:
       with:
         name: ${{ env.iTAG }}-Firmware
         path: ${{ env.FIRMWARE }}
+        
+    - name: Deliver BuildInfo
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.iTAG }}-BuildInfo
+        path: ./artifact/buildinfo/
 
     - name: Upload WeTransfer
       if: env.UPLOAD_WETRANSFER == 'true' && ! contains(github.event.action, 'noup')
