@@ -185,8 +185,8 @@ jobs:
       uses: GitRML/delete-workflow-runs@main
       continue-on-error: true
       with:
-        retain_days: 5
-        keep_minimum_runs: 10
+        retain_days: 3
+        keep_minimum_runs: 5
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@master
