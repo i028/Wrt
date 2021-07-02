@@ -27,6 +27,7 @@ env:
   CONFIG_FILE: config/lede.config
   DIY_P1_SH: scripts/diy-part1.sh
   DIY_P2_SH: scripts/diy-part2.sh
+  DIY_P4_SH: scripts/diy-part4.sh
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true
   UPLOAD_WETRANSFER: true
@@ -92,9 +93,7 @@ jobs:
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
         echo "::set-output name=status::success"
-        echo "iDATE=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
-        echo "iTAG=lede-$(date +"%y.%m.%d%H%M")" >> $GITHUB_ENV
-        
+  
     - name: Upload Packages
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
@@ -105,19 +104,8 @@ jobs:
     - name: Organize Files
       id: organize
       run: |
-        mkdir -p ./artifact/buildinfo
-        cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        rm -rf "*.manifest"
-        rm -rf $(find ./ -type f -name "*sha256sums*")
-        rename -v "s/config.*/${{ env.iTAG }}.config/" *
-        rename -v "s/.*.manifest/${{ env.iTAG }}.manifest/" *
-        rename -v "s/.*rootfs/${{ env.iTAG }}-rootfs/" *
-        rename -v "s/.*kernel/${{ env.iTAG }}-kernel/" *
-        rename -v "s/.*combined/${{ env.iTAG }}/" *
-        ls | xargs -i tar zcvf {}.gz {} --remove-files
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        chmod +x $DIY_P4_SH
+        $GITHUB_WORKSPACE/$DIY_P4_SH
         echo "::set-output name=status::success"
 
     - name: Upload Artifact
