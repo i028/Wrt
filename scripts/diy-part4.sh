@@ -16,7 +16,7 @@
 # Add a feed source
 #sed -i '$a src-git lienol https://github.com/Lienol/openwrt-package' feeds.conf.default
 #sed -i '$a src-git small https://github.com/i028/small' feeds.conf.default
-sed -i 'src-git opentopd  https://github.com/sirpdboy/sirpdboy-package' feeds.conf.default
+sed -i '$a src-git opentopd  https://github.com/sirpdboy/sirpdboy-package' feeds.conf.default
 sed -i '$a src-git helloworld https://github.com/C-oss/helloworld' feeds.conf.default
 
 # Add luci-theme-argon
